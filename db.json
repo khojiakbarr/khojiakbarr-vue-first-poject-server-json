@@ -1,1 +1,5 @@
-{ "todos": [] }
+{
+  "todos": [
+    { "id": "shdjads", "task": "ertaga nimadir qilish", "isComplated": false }
+  ]
+}
