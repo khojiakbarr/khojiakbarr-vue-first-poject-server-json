@@ -9,14 +9,23 @@ function useAxios() {
     try {
       const response = await axios.get(BASE_URL);
       console.log(response);
-      toast.success("succes");
       return response.data;
     } catch (err) {
       toast.error("err");
       console.log(err);
+    } finally {
     }
   };
+  const addTodo = async (body) => {
+    try {
+      const response = await axios.post(BASE_URL, body);
+      console.log(response);
 
+      toast.success("succes add");
+    } catch (err) {
+      toast.error("err");
+    }
+  };
   const deleteTodo = async (id) => {
     try {
       const response = await axios.delete(BASE_URL + "/" + id);
@@ -39,7 +48,7 @@ function useAxios() {
     }
   };
 
-  return { getTodos, deleteTodo, editTodo };
+  return { getTodos, deleteTodo, editTodo, addTodo };
 }
 
 export default useAxios;

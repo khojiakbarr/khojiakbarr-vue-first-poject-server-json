@@ -1,5 +1,14 @@
 {
   "todos": [
-    { "id": "shdjads", "task": "ertaga nimadir qilish", "isComplated": false }
+    {
+      "id": "ecb5",
+      "task": "bla",
+      "completed": false
+    },
+    {
+      "id": "5fb3",
+      "task": "oko",
+      "completed": false
+    }
   ]
 }
