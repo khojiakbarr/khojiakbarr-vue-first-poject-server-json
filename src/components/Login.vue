@@ -1,3 +1,11 @@
+<script setup>
+import { ref } from "vue";
+
+const user = ref("");
+const password = ref("");
+
+</script>
+
 <template>
   <section class="bg-gray-50 dark:bg-gray-900">
     <div
@@ -22,7 +30,7 @@
           >
             Sign in to your account
           </h1>
-          <form class="space-y-4 md:space-y-6" action="#">
+          <form class="space-y-4 md:space-y-6">
             <div>
               <label
                 for="email"
