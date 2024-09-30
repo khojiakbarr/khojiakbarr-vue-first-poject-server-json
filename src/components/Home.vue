@@ -1,5 +1,5 @@
 <template>
-  <section class="pt-20 md:pt-40 bg-gray-800 h-screen">
+  <section class="pt-20 md:pt-40 bg-gray-800 min-h-screen">
     <div class="container mx-auto px-8 lg:flex">
       <div class="text-center lg:text-left lg:w-1/2">
         <h1

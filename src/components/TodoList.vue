@@ -1,5 +1,14 @@
-<script setup lang="ts">
+<script setup>
+import { onMounted, computed } from "vue";
 import TableList from "./TableList.vue";
+import store from "@/store/store";
+import TableSkleton from "./TableSkleton.vue";
+onMounted(() => {
+  store.dispatch("getTodosAsync");
+});
+
+const todos = computed(() => store.state.todos);
+const loader = computed(() => store.state.isLoader);
 </script>
 
 <template>
@@ -16,9 +25,17 @@ import TableList from "./TableList.vue";
           <th scope="col" class="px-6 py-3">Action</th>
         </tr>
       </thead>
-      <tbody>
-        <TableList />
+      <tbody v-for="todo in todos">
+        <TableList :todo="todo" />
       </tbody>
     </table>
+    <div v-if="loader"><TableSkleton /></div>
+    <div v-else>
+      <div v-if="!todos.length">
+        <h2 class="text-center text-2xl mt-[20px] font-semibold text-slate-100">
+          Not Fount
+        </h2>
+      </div>
+    </div>
   </div>
 </template>

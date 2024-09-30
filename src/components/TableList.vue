@@ -1,3 +1,11 @@
+<script setup>
+const props = defineProps({
+  todo: Object,
+});
+const {} = props;
+console.log(props);
+</script>
+
 <template>
   <tr class="bg-white dark:bg-gray-800">
     <th
