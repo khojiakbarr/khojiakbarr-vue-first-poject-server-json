@@ -22,33 +22,34 @@ const store = createStore({
     setLoading(state, isLoading) {
       state.isLoader = isLoading;
     },
-  },
-  setTodos(state, todos) {
-    state.todos = todos;
-  },
-  addTodoMutation(state, todo) {
-    state.todos.push(todo);
-  },
-  deleteTodo(state, id) {
-    state.todos = state.todos.filter((todo) => todo.id !== id);
-  },
-  editTodo(state, action) {
-    state.todos = state.todos.map((todo) => {
-      if (todo.id === action.id) {
-        return { ...todo, ...action };
-      }
-      return todo;
-    });
-  },
-  isComplateTodo(state, action) {
-    state.todos = state.todos.map((todo) => {
-      if (todo.id === action.id) {
-        return { ...todo, isComplate: action.isComplate };
-      }
-      return todo;
-    });
-  },
+    setTodos(state, payload) {
+      state.todos = payload;
+    },
+    addTodoMutation(state, todo) {
+      state.todos.push(todo);
+    },
+    deleteTodo(state, id) {
+      console.log(id);
 
+      state.todos = state.todos.filter((todo) => todo._id !== id);
+    },
+    editTodo(state, action) {
+      state.todos = state.todos.map((todo) => {
+        if (todo._id === action.id) {
+          return action.todo;
+        }
+        return todo;
+      });
+    },
+    isComplateTodo(state, action) {
+      state.todos = state.todos.map((todo) => {
+        if (todo._id === action) {
+          return { ...todo, completed: !todo.completed };
+        }
+        return todo;
+      });
+    },
+  },
   //! actions
   actions: {
     //! Register
@@ -65,6 +66,7 @@ const store = createStore({
         commit("setLoading", false);
       }
     },
+
     //! Login
     async login({ commit }, payload) {
       commit("setLoading", true);
@@ -72,6 +74,9 @@ const store = createStore({
         const response = await axios.post(BASE_URL + "user/login", payload);
         localStorage.setItem("token", JSON.stringify(response.data.token));
         toast.success(response.data.message);
+        if (response.status === 200) {
+          localStorage.setItem("user", JSON.stringify(payload.username));
+        }
         router.push("/dashboard");
       } catch (err) {
         toast.error(err.response.data.message);
@@ -79,6 +84,7 @@ const store = createStore({
         commit("setLoading", false);
       }
     },
+
     //! Get Todos
     async getTodosAsync({ commit }) {
       commit("setLoading", true);
@@ -88,6 +94,7 @@ const store = createStore({
             authorization: token,
           },
         });
+
         commit("setTodos", response.data.allTodos);
       } catch (err) {
         toast.success(err.response.data.message);
@@ -96,17 +103,22 @@ const store = createStore({
         commit("setLoading", false);
       }
     },
+
     //! Add Todo
     async addTodoAsync({ commit }, payload) {
       commit("setLoading", true);
       try {
-        const response = await axios.post(BASE_URL + "todos/add", {
-          headers: {
-            authorization: token,
-          },
+        const response = await axios({
+          method: "post",
+          url: BASE_URL + "todos/add",
           data: payload,
+          headers: {
+            Authorization: token,
+          },
         });
-        commit("addTodo", response.data.todo);
+        console.log(response);
+
+        commit("addTodoMutation", response.data.todo);
         toast.success(response.data.message);
       } catch (err) {
         toast.success(err.response.data.message);
@@ -114,7 +126,66 @@ const store = createStore({
       } finally {
         commit("setLoading", false);
       }
-      commit("addTodo", payload);
+    },
+    //! Delete Todo
+    async deleteTodoAsync({ commit }, payload) {
+      commit("setLoading", true);
+      try {
+        const response = await axios.delete(BASE_URL + `todos/${payload}`, {
+          headers: {
+            Authorization: token,
+          },
+        });
+        commit("deleteTodo", payload);
+
+        toast.success(response.data.message);
+      } catch (err) {
+        console.log(err);
+        toast.error(err.response.data.message);
+      } finally {
+        commit("setLoading", false);
+      }
+    },
+    //! Update Todo
+    async updateTodoAsync({ commit }, payload) {
+      commit("setLoading", true);
+      try {
+        const response = await axios({
+          url: BASE_URL + `todos/${payload.id}`,
+          method: "put",
+          data: payload.todo,
+          headers: {
+            Authorization: token,
+          },
+        });
+        commit("editTodo", { id: payload.id, todo: response.data.todo });
+        toast.success(response.data.message);
+      } catch (err) {
+        toast.error(err.response.data.message);
+        console.log(err);
+      } finally {
+        commit("setLoading", false);
+      }
+    },
+    //! isComplated
+    async isComplateAsync({ commit }, payload) {
+      commit("setLoading", true);
+      try {
+        const response = await axios({
+          url: BASE_URL + `todos?id=${payload}`,
+          method: "put",
+          headers: {
+            Authorization: token,
+          },
+        });
+        commit("isComplateTodo", payload);
+        toast.success(response.data.message);
+      } catch (err) {
+        toast.error(err.response.data.message);
+        console.log(err);
+      } finally {
+        commit("setLoading", false);
+      }
     },
   },
 });

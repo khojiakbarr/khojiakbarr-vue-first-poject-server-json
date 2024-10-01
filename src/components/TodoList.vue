@@ -25,7 +25,7 @@ const loader = computed(() => store.state.isLoader);
           <th scope="col" class="px-6 py-3">Action</th>
         </tr>
       </thead>
-      <tbody v-for="todo in todos">
+      <tbody v-if="!loader" v-for="todo in todos">
         <TableList :todo="todo" />
       </tbody>
     </table>
