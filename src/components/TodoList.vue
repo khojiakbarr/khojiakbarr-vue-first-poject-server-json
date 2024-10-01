@@ -31,7 +31,7 @@ const loader = computed(() => store.state.isLoader);
     </table>
     <div v-if="loader"><TableSkleton /></div>
     <div v-else>
-      <div v-if="!todos.length">
+      <div v-if="!todos?.length">
         <h2 class="text-center text-2xl mt-[20px] font-semibold text-slate-100">
           Not Fount
         </h2>
